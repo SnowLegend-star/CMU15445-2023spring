@@ -18,6 +18,7 @@
 #include <utility>
 #include <vector>
 
+#include "binder/bound_expression.h"
 #include "catalog/schema.h"
 #include "common/exception.h"
 #include "common/macros.h"
@@ -46,7 +47,22 @@ class StringExpression : public AbstractExpression {
 
   auto Compute(const std::string &val) const -> std::string {
     // TODO(student): implement upper / lower.
-    return {};
+    std::string str;
+    switch (expr_type_) {
+      case StringExpressionType::Lower:
+        for (char const &c : val) {
+          str.push_back(std::tolower(c));
+        }
+        break;
+      case StringExpressionType::Upper:
+        for (char const &c : val) {
+          str.push_back(std::toupper(c));
+        }
+        break;
+      default:
+        break;
+    }
+    return str;
   }
 
   auto Evaluate(const Tuple *tuple, const Schema &schema) const -> Value override {

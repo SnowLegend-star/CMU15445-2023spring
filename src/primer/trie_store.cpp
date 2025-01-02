@@ -17,15 +17,15 @@ auto TrieStore::Get(std::string_view key) -> std::optional<ValueGuard<T>> {
   // (3) If the value is found, return a ValueGuard object that holds a reference to the value and the
   //     root. Otherwise, return std::nullopt.
   root_lock_.lock();
-  auto new_root=root_;
+  auto new_root = root_;
   root_lock_.unlock();
 
-  auto val=new_root.Get<T>(key);
-  if(!val){
-      return std::nullopt;
+  auto val = new_root.Get<T>(key);
+  if (!val) {
+    return std::nullopt;
   }
 
-  auto val_guard=ValueGuard<T>(new_root,*val);
+  auto val_guard = ValueGuard<T>(new_root, *val);
   return val_guard;
 }
 
@@ -35,11 +35,11 @@ void TrieStore::Put(std::string_view key, T value) {
   // The logic should be somehow similar to `TrieStore::Get`.
   write_lock_.lock();
   root_lock_.lock();
-  auto new_root=root_;
+  auto new_root = root_;
   root_lock_.unlock();
-  auto root2=new_root.Put(key,std::move(value));
+  auto root2 = new_root.Put(key, std::move(value));
   root_lock_.lock();
-  root_=root2;
+  root_ = root2;
   root_lock_.unlock();
   write_lock_.unlock();
 }
